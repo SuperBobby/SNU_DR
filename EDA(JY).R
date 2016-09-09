@@ -1,3 +1,5 @@
+## Basic EDA by JY   2016. 9.9 ... just for fun :D
+
 library(data.table)
 
 mission_all = fread("../data/uplusMissionAll.csv", na.strings=c("NULL"))
@@ -22,7 +24,7 @@ length(unique(mission_all$siteid)) # 5504 residential
 missions = table(mission_all$missionId) # 8 missions 
 mean(missions) # mean 4030.625 --> 4030.625/ 5504 = about 73% paricipation rate 
 
-# points
+# points ... how calculate the points?
 summary(mission_all$points)
 table(mission_all$points)
 barplot(table(mission_all$points))
@@ -45,7 +47,7 @@ mission_all[negative_goal_indexes] # --> inappropriate goal setting : 3 cases
 summary(mission_all$actualUsage)
 #  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 #     0  198700  297000  395800  462100 3976000   28724 
-
+28724 / nrow(mission_all) # 89% ... don't know their actual usage... big loss of the information?
 
 # joined
 table(mission_all$joined)
@@ -62,15 +64,17 @@ table(mission_all$disconnectCount)
 # succeed
 table(mission_all$succeed)
 # 0     1   
-# 1199  2322  
+# 1199  2322    # --> 2322 / (1199+2322) = 65.94% success rate 
+sum(is.na(mission_all$succeed)) # 28724 cases ... don't know whether success or not
+                                # 28724 / nrow(mission_all) = 89%
 
 length(which(is.na(mission_all$actualUsage)))      
 length(which(is.na(mission_all$succeed)))      
-sum(which(is.na(mission_all$actualUsage)) - which(is.na(mission_all$succeed))) # when actualUsage == NA, success == NA 
+sum(which(is.na(mission_all$actualUsage)) - which(is.na(mission_all$succeed))) # when actualUsage == NA, success == NA
 
 mission_all$goalAmount - mission_all$actualUsage
 
-# reason : why the mission failed .. DISCONNECTED/ USAGE_EXCEEDED
+# reason : why the mission failed(succeed == 0) .. DISCONNECTED/ USAGE_EXCEEDED
 summary(mission_all$reason)
 table(mission_all$reason)
 
